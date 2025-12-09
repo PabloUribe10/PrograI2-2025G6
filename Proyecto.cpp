@@ -9,9 +9,9 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
 //void NuevoEstudiante(string archivoEstudiantes);
 //void CrearCarrera(string archivoCarreras);
 //void ListadoCarreras(string archivoCarreras);
-//void NuevoPrestamo(string archivoprestamos, string archivoEstudiantes);
-//void agregarlibro(string archivoLibros);
-//void listadoLibros(string archivoLibros);
+void NuevoPrestamo(string archivoprestamos, string archivoEstudiantes);
+void agregarlibro(string archivoLibros);
+void listadoLibros(string archivoLibros);
 //void listadoLibrosImpresora(string archivoLibros);
 //void listadoEstudiantes(string archivoEstudiantes, string archivoCarreras);
 
@@ -45,7 +45,7 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
         switch (opcion)
         {
             case 1:
-                //NuevoPrestamo(archivoprestamos, archivoEstudiantes);
+                NuevoPrestamo(archivoprestamos, archivoEstudiantes);
                 system("pause");          
                 break;
             case 2:
@@ -63,11 +63,11 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
                     switch (subopcion)
                     {
                         case 1:
-                            //agregarlibro(archivoLibros);
+                            agregarlibro(archivoLibros);
                             system("pause");
                             break;
                         case 2:
-                            //listadoLibros(archivoLibros);
+                            listadoLibros(archivoLibros);
                             system("pause");
                             break;
                         case 3:
@@ -123,7 +123,7 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
                 do
                 {
                     system("cls");
-                    cout << "MENU REPORTES" << endl;
+                    cout << "MENU REPORTES (Impresora)" << endl;
                     cout << "=============" << endl;
                     cout << "1. Libro mas prestado" << endl;
                     cout << "2. Estudiantes con prestamos activos" << endl;
@@ -172,3 +172,51 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
     } while (opcion != 0);
     system("cls");
 }
+
+/*void CrearCarrera(string archivoCarreras)
+{
+    Carrera _carrera;
+    ofstream archivo;
+    archivo.open(archivoCarreras, ios::binary | ios::app);
+    if (archivo.good())
+    {
+        cout << "Ingrese Codigo: ";
+        cin >> _carrera.codigo;
+        cin.ignore();
+        cout << "Ingrese Resumido: ";
+        cin.getline(_carrera.resumido, 4);
+        cout << "Ingrese Nombre: ";
+        cin.getline(_carrera.nombre, 30);
+        archivo.write((char*)&_carrera, sizeof(Carrera));
+        cout << "Carrera creada exitosamente." << endl;
+    }
+    else
+    {
+        cout << "No se pudo abrir el archivo." << endl;
+    }
+    archivo.close();
+}
+
+void ListadoCarreras(string archivoCarreras)
+{
+    Carrera _carrera;
+    ifstream archivo;
+    archivo.open(archivoCarreras, ios::binary);
+    if (archivo.good())
+    {
+        cout << "CARRERAS" << endl;
+        cout << "========" << endl;
+        cout << "Codigo\tResumido\tNombre" << endl;
+        cout << "------------------------------------------------" << endl;
+        while (archivo.read((char*)&_carrera, sizeof(Carrera)))
+        {
+            cout << _carrera.codigo << "\t" << _carrera.resumido << "\t\t" << _carrera.nombre << endl;
+        }
+        cout << "------------------------------------------------" << endl;
+    }
+    else
+    {
+        cout << "No se pudo abrir el archivo." << endl;
+    }
+    archivo.close();
+}       */
