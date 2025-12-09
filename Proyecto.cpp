@@ -5,16 +5,30 @@
 
 using namespace std;
 
+void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string archivoprestamos, string archivoLibros);
+//void NuevoEstudiante(string archivoEstudiantes);
+//void CrearCarrera(string archivoCarreras);
+//void ListadoCarreras(string archivoCarreras);
+//void NuevoPrestamo(string archivoprestamos, string archivoEstudiantes);
+//void agregarlibro(string archivoLibros);
+//void listadoLibros(string archivoLibros);
+//void listadoLibrosImpresora(string archivoLibros);
+//void listadoEstudiantes(string archivoEstudiantes, string archivoCarreras);
+
 int main()
 {
-    MenuOpciones();
+    string archivoCarreras = "carreras.bin";
+    string archivoEstudiantes = "estudiantes.bin";
+    string archivoprestamos = "prestamos.bin";
+    string archivoLibros = "libros.bin";
+    MenuOpciones(archivoCarreras, archivoEstudiantes, archivoprestamos, archivoLibros);
     return 0;
 }
 
-void MenuOpciones()
-{
+void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string archivoprestamos, string archivoLibros){
     int opcion = 0;
     int subopcion = 0;
+    int subopcion2 = 0;
     do
     {
         system("cls");
@@ -24,13 +38,14 @@ void MenuOpciones()
         cout << "2. Organizar Inventario" << endl;
         cout << "3. Datos Carreras" << endl;
         cout << "4. Nuevo Estudiante" << endl;
+        cout << "5. Reportes" << endl;
         cout << "0. Salir" << endl;
         cout << "Seleccione una opcion: ";
         cin >> opcion;
         switch (opcion)
         {
             case 1:
-                NuevoPrestamo();
+                //NuevoPrestamo(archivoprestamos, archivoEstudiantes);
                 system("pause");          
                 break;
             case 2:
@@ -48,15 +63,15 @@ void MenuOpciones()
                     switch (subopcion)
                     {
                         case 1:
-                            libro()
+                            //agregarlibro(archivoLibros);
                             system("pause");
                             break;
                         case 2:
-                            listadoLibros();
+                            //listadoLibros(archivoLibros);
                             system("pause");
                             break;
                         case 3:
-                            listdadoLibrosImpresora();
+                            //listadoLibrosImpresora(archivoLibros);
                             system("pause");
                             break;    
                         default:
@@ -75,19 +90,19 @@ void MenuOpciones()
                     system("cls");
                     cout << "MENU CARRERAS" << endl;
                     cout << "=============" << endl;
-                    cout << "\t1. Crear Carrera" << endl;
-                    cout << "\t2. Listado Carreras" << endl;
-                    cout << "\t0. Salir" << endl;
+                    cout << "1. Crear Carrera" << endl;
+                    cout << "2. Listado Carreras" << endl;
+                    cout << "0. Salir" << endl;
                     cout << "Seleccione una opcion: ";
                     cin >> subopcion;
                     switch (subopcion)
                     {
                         case 1:
-                            CrearCarrera(archivoCarreras);
+                            //CrearCarrera(archivoCarreras);
                             system("pause");
                             break;
                         case 2:
-                            ListadoCarreras(archivoCarreras);
+                            //ListadoCarreras(archivoCarreras);
                             system("pause");
                             break;
                         default:
@@ -101,19 +116,59 @@ void MenuOpciones()
                 } while (subopcion != 0); 
                 break;
             case 4:
-                NuevoEstudiante();
+                //NuevoEstudiante(archivoEstudiantes);
                 system("pause");
                 break;
+            case 5:
+                do
+                {
+                    system("cls");
+                    cout << "MENU REPORTES" << endl;
+                    cout << "=============" << endl;
+                    cout << "1. Libro mas prestado" << endl;
+                    cout << "2. Estudiantes con prestamos activos" << endl;
+                    cout << "3. Libro menos prestado" << endl;
+                    cout << "4. Estudiantes morosos" << endl;
+                    cout << "5. Prestamos por carrera" << endl;
+                    cout << "0. Salir" << endl;
+                    cout << "Seleccione una opcion: ";
+                    cin >> subopcion2;
+                    switch (subopcion2)
+                    {
+                        case 1:
+                            //listadoEstudiantes(archivoEstudiantes, archivoCarreras);
+                            system("pause");
+                            break;
+                        case 2:
+                            //listadoEstudiantes(archivoEstudiantes, archivoCarreras);
+                            system("pause");
+                            break;
+                        case 3:
+                            //listadoEstudiantes(archivoEstudiantes, archivoCarreras);
+                            system("pause");
+                            break;
+                        case 4:
+                            //listadoEstudiantes(archivoEstudiantes, archivoCarreras);
+                            system("pause");
+                            break;
+                        default:
+                            if (subopcion2 != 0)
+                            {
+                                cout << "Opcion no valida." << endl;
+                                system("pause");
+                            }
+                            break;
+                    }
+                } while (subopcion2 != 0);
+            
             default:
                 if (opcion != 0)
                 {
                     cout << "Opcion no valida." << endl;
                     system("pause");
                 }
-                
                 break;
         }
     } while (opcion != 0);
     system("cls");
 }
-
