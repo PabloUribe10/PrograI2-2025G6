@@ -1,4 +1,3 @@
-
 struct Categoria
 {
     int id_categoria;   // ID único de la categoría
@@ -23,193 +22,158 @@ struct Multa
     fecha fecha_registro;   // Fecha en que se genera la multa
 };
 
-
-
-int generarIDEstudiante()
+int generarCodigoAleatorio(int digitos = 8)
 {
-    return 100000 + rand() % 900000;
+    int min = 1;
+    for (int i = 1; i < digitos; i++) min *= 10;
+    return min + rand() % (9 * min);
 }
 
-
-int generarCodigoMulta()
+void limpiarTexto(char texto[])
 {
-    return 100000 + rand() % 900000;
-}
-
-
-void agregarCategoria(string archivoCategorias)
-{
-    fstream archivo(archivoCategorias, ios::binary | ios::app);
-    if (!archivo.is_open())
+    for (int i = 0; texto[i] != '\0'; i++)
     {
-        cout << "No se pudo abrir el archivo de categorias.\n";
-        return;
+        unsigned char c = texto[i];
+        if (c < 32 || c > 126)
+        {
+            texto[i] = ' ';
+        }
     }
-
-    Categoria c;
-    cout << "\n=== NUEVA CATEGORIA ===\n";
-    cout << "ID Categoria: ";
-    cin >> c.id_categoria;
-    cin.ignore();
-
-    cout << "Nombre de la categoria (ej: Medicina, Física): ";
-    cin.getline(c.nombre, 50);
-    normalizarEntrada(c.nombre);
-
-    archivo.write((char*)&c, sizeof(Categoria));
-    archivo.close();
-
-    cout << "\nCategoria registrada correctamente.\n";
 }
 
-void listadoCategorias(string archivoCategorias)
+void normalizarEntrada(char texto[])
 {
-    ifstream archivo(archivoCategorias, ios::binary);
-    if (!archivo.is_open())
+    for (int i = 0; texto[i] != '\0'; i++)
     {
-        cout << "No se pudo abrir el archivo de categorias.\n";
-        return;
+        unsigned char c = texto[i];
+        if (!((c >= 'A' && c <= 'Z') ||
+              (c >= 'a' && c <= 'z') ||
+              (c >= '0' && c <= '9') ||
+              c == ' '))
+        {
+            texto[i] = ' ';
+        }
     }
-
-    Categoria c;
-    int cont = 0;
-    cout << "\n=== LISTADO DE CATEGORIAS ===\n\n";
-    while (archivo.read((char*)&c, sizeof(Categoria)))
-    {
-        limpiarTexto(c.nombre);
-        cout << "Categoria #" << ++cont << endl;
-        cout << "ID: " << c.id_categoria << endl;
-        cout << "Nombre: " << c.nombre << endl;
-        cout << "------------------------\n";
-    }
-
-    if (cont == 0)
-        cout << "No hay categorias registradas.\n";
-
-    archivo.close();
 }
 
+void ingresarFecha(fecha &f)
+{
+    cout << "Dia: ";
+    cin >> f.dia;
+    cout << "Mes: ";
+    cin >> f.mes;
+    cout << "Anio: ";
+    cin >> f.anio;
+}
+
+void mostrarFecha(fecha f)
+{
+    cout << f.dia << "/" << f.mes << "/" << f.anio;
+}
+
+// Funciones de Estudiante
 void agregarEstudiante(string archivoEstudiantes)
 {
-    fstream archivo(archivoEstudiantes, ios::binary | ios::app);
-    if (!archivo.is_open())
-    {
-        cout << "No se pudo abrir el archivo de estudiantes.\n";
-        return;
-    }
+    fstream archEstudiantes(archivoEstudiantes, ios::binary | ios::app);
+    if (!archEstudiantes.is_open()) return;
 
     Estudiante e;
-    e.id_estudiante = generarIDEstudiante();  // Generar ID aleatorio
-    cout << "\n=== NUEVO ESTUDIANTE ===\n";
-    cout << "Nombre: ";
+    e.ID_estudiante = generarCodigoAleatorio(6);
+
     cin.ignore();
+    cout << "Nombre del estudiante: ";
     cin.getline(e.nombre, 50);
-    cout << "Apellido: ";
+    cout << "Apellido del estudiante: ";
     cin.getline(e.apellido, 50);
     cout << "Carrera: ";
     cin.getline(e.carrera, 50);
+    e.habilitado = true;
 
-    normalizarEntrada(e.nombre);
-    normalizarEntrada(e.apellido);
-    normalizarEntrada(e.carrera);
-
-    // Inicialmente habilitado, la verificación final se hace según Multa
-    e.puede_alquilar = true;
-
-    archivo.write((char*)&e, sizeof(Estudiante));
-    archivo.close();
-
-    cout << "\nEstudiante registrado correctamente. ID: " << e.id_estudiante << endl;
+    archEstudiantes.write((char*)&e, sizeof(Estudiante));
+    archEstudiantes.close();
+    cout << "Estudiante agregado con ID: " << e.ID_estudiante << endl;
 }
 
 void listadoEstudiantes(string archivoEstudiantes)
 {
-    ifstream archivo(archivoEstudiantes, ios::binary);
-    if (!archivo.is_open())
-    {
-        cout << "No se pudo abrir el archivo de estudiantes.\n";
-        return;
-    }
+    ifstream archEstudiantes(archivoEstudiantes, ios::binary);
+    if (!archEstudiantes.is_open()) return;
 
     Estudiante e;
     int cont = 0;
-    cout << "\n=== LISTADO DE ESTUDIANTES ===\n\n";
-    while (archivo.read((char*)&e, sizeof(Estudiante)))
+    while (archEstudiantes.read((char*)&e, sizeof(Estudiante)))
     {
         limpiarTexto(e.nombre);
         limpiarTexto(e.apellido);
         limpiarTexto(e.carrera);
 
         cout << "Estudiante #" << ++cont << endl;
-        cout << "ID: " << e.id_estudiante << endl;
+        cout << "ID: " << e.ID_estudiante << endl;
         cout << "Nombre: " << e.nombre << " " << e.apellido << endl;
         cout << "Carrera: " << e.carrera << endl;
-        cout << "Puede alquilar libro: " << (e.puede_alquilar ? "Si" : "No") << endl;
-        cout << "------------------------\n";
+        cout << "Habilitado para prestamos: " << (e.habilitado ? "Si" : "No") << endl;
+        cout << "-----------------------------\n";
     }
-
-    if (cont == 0)
-        cout << "No hay estudiantes registrados.\n";
-
-    archivo.close();
+    archEstudiantes.close();
 }
 
-
-void registrarMulta(string archivoMultas)
+// Funciones de Categoria
+void agregarCategorias(vector<Categoria> &categorias)
 {
-    fstream archivo(archivoMultas, ios::binary | ios::app);
-    if (!archivo.is_open())
+    const char* nombres[10] = {"Fisica", "Quimica", "Matematica", "Biologia", "Medicina", "Informatica", "Economia", "Historia", "Literatura", "Arte"};
+    for (int i = 0; i < 10; i++)
     {
-        cout << "No se pudo abrir el archivo de multas.\n";
-        return;
+        categorias.push_back({i+1, ""});
+        strcpy(categorias[i].nombre, nombres[i]);
     }
+}
+
+void listadoCategorias(vector<Categoria> &categorias)
+{
+    for (int i = 0; i < categorias.size(); i++)
+    {
+        cout << categorias[i].ID_categoria << " - " << categorias[i].nombre << endl;
+    }
+}
+
+// Funciones de Multa
+void registrarMulta(string archivoMultas, int ID_estudiante, int dias)
+{
+    fstream archMultas(archivoMultas, ios::binary | ios::app);
+    if (!archMultas.is_open()) return;
 
     Multa m;
-    m.codigo_multa = generarCodigoMulta();
+    m.codigo_multa = generarCodigoAleatorio(6);
+    m.ID_estudiante = ID_estudiante;
+    m.dias_retraso = dias;
 
-    cout << "\n=== NUEVA MULTA ===\n";
-    cout << "ID Estudiante: ";
-    cin >> m.id_estudiante;
-    cout << "Dias de retraso: ";
-    cin >> m.dias_retraso;
-    cout << "Dias de multa: ";
-    cin >> m.dias_multa;
+    cout << "Ingrese fecha de registro del prestamo:\n";
+    ingresarFecha(m.fecha_registro);
 
-    cout << "Fecha de registro de la multa:\n";
-    ingresarFechaPrestamo(m.fecha_registro); // reutilizamos funcion de fecha
-
-    archivo.write((char*)&m, sizeof(Multa));
-    archivo.close();
-
-    cout << "\nMulta registrada correctamente. Codigo: " << m.codigo_multa << endl;
+    archMultas.write((char*)&m, sizeof(Multa));
+    archMultas.close();
+    cout << "Multa registrada con codigo: " << m.codigo_multa << endl;
 }
 
 void listadoMultas(string archivoMultas)
 {
-    ifstream archivo(archivoMultas, ios::binary);
-    if (!archivo.is_open())
-    {
-        cout << "No se pudo abrir el archivo de multas.\n";
-        return;
-    }
+    ifstream archMultas(archivoMultas, ios::binary);
+    if (!archMultas.is_open()) return;
 
     Multa m;
     int cont = 0;
-    cout << "\n=== LISTADO DE MULTAS ===\n\n";
-    while (archivo.read((char*)&m, sizeof(Multa)))
+    while (archMultas.read((char*)&m, sizeof(Multa)))
     {
         cout << "Multa #" << ++cont << endl;
         cout << "Codigo: " << m.codigo_multa << endl;
-        cout << "ID Estudiante: " << m.id_estudiante << endl;
-        cout << "Dias retraso: " << m.dias_retraso << endl;
-        cout << "Dias multa: " << m.dias_multa << endl;
+        cout << "ID Estudiante: " << m.ID_estudiante << endl;
+        cout << "Dias de retraso: " << m.dias_retraso << endl;
         cout << "Fecha registro: ";
         mostrarFecha(m.fecha_registro);
-        cout << "\n------------------------\n";
+        cout << "\n-----------------------------\n";
     }
-
-    if (cont == 0)
-        cout << "No hay multas registradas.\n";
+    archMultas.close();
+}
 
     archivo.close();
 }
