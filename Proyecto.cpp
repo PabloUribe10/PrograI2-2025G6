@@ -7,7 +7,7 @@
 using namespace std;
 
 void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string archivoprestamos, string archivoLibros, string archivoMultas);
-void NuevoPrestamo(string archivoprestamos, string archivoEstudiantes);
+void NuevoPrestamo(string archivoprestamos, string archivoEstudiantes, string archivoLibros);
 void agregarlibro(string archivoLibros);
 void listadoLibros(string archivoLibros);
 void listadoLibrosImpresora(string archivoLibros);
@@ -59,7 +59,7 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
         switch (opcion)
         {
         case 1:
-            NuevoPrestamo(archivoprestamos, archivoEstudiantes);
+            NuevoPrestamo(archivoprestamos, archivoEstudiantes, archivoLibros);
             system("pause");
             break;
 
