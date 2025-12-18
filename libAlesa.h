@@ -8,7 +8,6 @@
 
 using namespace std;
 
-
 struct Carrera
 {
     int ID_carrera;
@@ -31,7 +30,6 @@ struct Multa
     int ID_estudiante;
     Fecha fecha_registro; 
 };
-
 
 int generarCodigoAleatorio(int digitos = 6)
 {
@@ -98,7 +96,8 @@ void imprimirEstudiantesTXT(string archivoEstudiantes, string archivoSalida)
     Estudiante e;
     while (arch.read((char*)&e, sizeof(Estudiante)))
     {
-        archTXT << e.nombre << " " << e.apellido
+        archTXT << e.ID_estudiante << " - "
+                << e.nombre << " " << e.apellido
                 << " - " << e.carrera << "\n";
     }
 
@@ -169,4 +168,3 @@ void imprimirMultasTXT(string archivoMultas, string archivoSalida)
     arch.close();
     archTXT.close();
 }
-
