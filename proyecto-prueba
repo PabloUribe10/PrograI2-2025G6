@@ -1,0 +1,234 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include "libestructurasPablo.h"
+//#include "libAlesa.h"
+
+using namespace std;
+
+void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string archivoprestamos, string archivoLibros, string archivoMultas);
+void NuevoPrestamo(string archivoprestamos, string archivoEstudiantes, string archivoLibros);
+void agregarlibro(string archivoLibros);
+void listadoLibros(string archivoLibros);
+void listadoLibrosImpresora(string archivoLibros);
+void ReportePrestamosActivos(string archivoprestamos);
+void ReporteLibroMasPrestado(string archivoprestamos, string archivoLibros);
+void listadoMultas(string archivoMultas);
+void registrarMulta(string archivoMultas, int ID_estudiante, int dias);
+void CrearCarrera(string archivoCarreras);
+void ListadoCarreras(string archivoCarreras);
+void CrearEstudiante(string archivoEstudiantes, string archivoCarreras);
+void generarMultas(string archivoprestamos, string archivoMultas);
+void ReporteEstudiantesMorososTXT(string archivoEstudiantes, string archivoMultas);
+void ReporteEstudiantesMultadosTXT(string archivoMultas);
+void ReporteLibrosPorCarreraTXT(string archivoLibros, string archivoCarreras);
+
+int main()
+{
+    string archivoCarreras = "carreras.bin";
+    string archivoEstudiantes = "estudiantes.bin";
+    string archivoprestamos = "prestamos.bin";
+    string archivoLibros = "libros.bin";
+    string archivoMultas = "multas.bin";
+
+    MenuOpciones(archivoCarreras, archivoEstudiantes, archivoprestamos, archivoLibros, archivoMultas);
+    return 0;
+}
+
+void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string archivoprestamos, string archivoLibros, string archivoMultas)
+{
+    int opcion = 0;
+    int subopcion = 0;
+    int subopcion2 = 0;
+    vector<Carrera> carreras;
+
+    do
+    {
+        system("cls");
+        cout << "MENU DE OPCIONES" << endl;
+        cout << "=============================" << endl;
+        cout << "1. Nuevo Prestamo" << endl;
+        cout << "2. Organizar Inventario" << endl;
+        cout << "3. Datos Carreras" << endl;
+        cout << "4. Nuevo Estudiante" << endl;
+        cout << "5. Reportes" << endl;
+        cout << "6. Multas" << endl;
+        cout << "0. Salir" << endl;
+        cout << "Seleccione una opcion: ";
+        cin >> opcion;
+        switch (opcion)
+        {
+        case 1:
+            NuevoPrestamo(archivoprestamos, archivoEstudiantes, archivoLibros);
+            system("pause");
+            break;
+
+        case 2:
+            do
+            {
+                system("cls");
+                cout << "Organizar Inventario" << endl;
+                cout << "================================" << endl;
+                cout << "1. Agregar Libro" << endl;
+                cout << "2. Listado Libros" << endl;
+                cout << "3. Listado Libros (Impresora)" << endl;
+                cout << "0. Salir" << endl;
+                cout << "Seleccione una opcion: ";
+                cin >> subopcion;
+
+                switch (subopcion)
+                {
+                case 1:
+                    agregarlibro(archivoLibros);
+                    system("pause");
+                    break;
+                case 2:
+                    listadoLibros(archivoLibros);
+                    system("pause");
+                    break;
+                case 3:
+                    listadoLibrosImpresora(archivoLibros);
+                    system("pause");
+                    break;
+                default:
+                    if (subopcion != 0)
+                    {
+                        cout << "Opcion no valida." << endl;
+                        system("pause");
+                    }
+                    break;
+                }
+            } while (subopcion != 0);
+            break;
+
+        case 3:
+            system("cls");
+            cout << "LISTADO DE CARRERAS" << endl;
+            cout << "=====================" << endl;
+            cout << "1. Agregar Carreras" << endl;
+            cout << "2. Listar Carreras" << endl;
+            cout << "0. salir"<< endl;
+            cout << "Seleccione una opcion: ";
+            cin >> subopcion;
+            switch (subopcion)
+            {
+            do
+            {
+                case 1:
+                    CrearCarrera(archivoCarreras);
+                    cout << "Carreras agregadas correctamente." << endl;
+                    system("pause");
+                    break;
+                case 2:
+                    ListadoCarreras(archivoCarreras);
+                    system("pause");
+                    break;
+                default:
+                    if (subopcion != 0)
+                    {
+                        cout << "Opcion no valida." << endl;
+                        system("pause");
+                    }
+                    break;
+            
+                    
+            } while (subopcion != 0);
+            break;
+        }
+        break;
+        case 4:
+            CrearEstudiante(archivoEstudiantes, archivoCarreras);
+            system("pause");
+            break;
+
+        case 5:
+            do
+            {
+                system("cls");
+                cout << "MENU REPORTES (Impresora)" << endl;
+                cout << "=============" << endl;
+                cout << "1. Libro mas prestado" << endl;
+                cout << "2. Estudiantes con prestamos activos" << endl;
+                cout << "3. Estudiantes morosos" << endl;
+                cout << "4. Prestamos por carrera" << endl;
+                cout << "0. Salir" << endl;
+                cout << "Seleccione una opcion: ";
+                cin >> subopcion2;
+
+                switch (subopcion2)
+                {
+                case 1:
+                    ReporteLibroMasPrestado(archivoprestamos, archivoLibros);
+                    system("pause");
+                    break;
+                case 2:
+                    ReportePrestamosActivos(archivoprestamos);
+                    system("pause");
+                    break;
+                case 3:
+                    ReporteEstudiantesMorososTXT(archivoEstudiantes, archivoMultas);
+                    cout << "Archivo generado: estudiantes_morosos.txt" << endl;
+                    system("pause");
+                    break;
+                case 4:
+                    ReporteLibrosPorCarreraTXT(archivoLibros, archivoCarreras);
+                    system("pause");
+                    break;
+                    default:
+                      if (subopcion2 != 0)
+                      {  
+                          cout << "Opcion no valida." << endl;
+                          system("pause");
+                      }
+                    break;
+                }
+            } while (subopcion2 != 0);
+            break;
+
+        case 6: // MULTAS
+            do
+            {
+                system("cls");
+                cout << "MENU MULTAS" << endl;
+                cout << "1. Listado de multas" << endl;
+                cout << "2. Imprimir multas a archivo" << endl;
+                cout << "0. Volver al menu principal" << endl;
+                cout << "Seleccione una opcion: ";
+                cin >> subopcion;
+
+                switch(subopcion)
+                {
+                case 1:
+                    generarMultas(archivoprestamos, archivoMultas);
+                    system("pause");
+                    break;
+                case 2:
+                    ReporteEstudiantesMultadosTXT(archivoMultas);
+                    cout << "Archivo multas.txt generado correctamente." << endl;
+                    system("pause");
+                    break;
+                default:
+                    if(subopcion != 0)
+                    {
+                        cout << "Opcion no valida." << endl;
+                        system("pause");
+                    }
+                    break;
+                }
+
+            } while(subopcion != 0);
+            break;
+
+        default:
+            if (opcion != 0)
+            {
+                cout << "Opcion no valida." << endl;
+                system("pause");
+            }
+            break;
+        }
+
+    } while (opcion != 0);
+
+    system("cls");
+}
