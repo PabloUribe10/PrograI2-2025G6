@@ -15,6 +15,13 @@ void ReportePrestamosActivos(string archivoprestamos);
 void ReporteLibroMasPrestado(string archivoprestamos, string archivoLibros);
 void listadoMultas(string archivoMultas);
 void registrarMulta(string archivoMultas, int ID_estudiante, int dias);
+void CrearCarrera(string archivoCarreras);
+void ListadoCarreras(string archivoCarreras);
+void CrearEstudiante(string archivoEstudiantes, string archivoCarreras);
+void generarMultas(string archivoprestamos, string archivoMultas);
+void ReporteEstudiantesMorososTXT(string archivoEstudiantes, string archivoMultas);
+void ReporteEstudiantesMultadosTXT(string archivoMultas);
+void ReporteLibrosPorCarreraTXT(string archivoLibros, string archivoCarreras);
 
 int main()
 {
@@ -97,15 +104,40 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
         case 3:
             system("cls");
             cout << "LISTADO DE CARRERAS" << endl;
-            agregarCarreras(carreras);
-            listadoCarreras(carreras);
-            system("pause");
+            cout << "=====================" << endl;
+            cout << "1. Agregar Carreras" << endl;
+            cout << "2. Listar Carreras" << endl;
+            cout << "0. salir"<< endl;
+            cout << "Seleccione una opcion: ";
+            cin >> subopcion;
+            switch (subopcion)
+            {
+            do
+            {
+                case 1:
+                    CrearCarrera(archivoCarreras);
+                    cout << "Carreras agregadas correctamente." << endl;
+                    system("pause");
+                    break;
+                case 2:
+                    ListadoCarreras(archivoCarreras);
+                    system("pause");
+                    break;
+                default:
+                    if (subopcion != 0)
+                    {
+                        cout << "Opcion no valida." << endl;
+                        system("pause");
+                    }
+                    break;
+            
+                    
+            } while (subopcion != 0);
             break;
-
+        }
+        break;
         case 4:
-            system("cls");
-            agregarEstudiante(archivoEstudiantes);
-            cout << "Estudiante registrado correctamente." << endl;
+            CrearEstudiante(archivoEstudiantes, archivoCarreras);
             system("pause");
             break;
 
@@ -134,11 +166,13 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
                     system("pause");
                     break;
                 case 3:
-                    imprimirEstudiantesTXT(archivoEstudiantes, "estudiantes_morosos.txt");
+                    ReporteEstudiantesMorososTXT(archivoEstudiantes, archivoMultas);
                     cout << "Archivo generado: estudiantes_morosos.txt" << endl;
                     system("pause");
+                    break;
                 case 4:
-                    
+                    ReporteLibrosPorCarreraTXT(archivoLibros, archivoCarreras);
+                    system("pause");
                     break;
                 default:
                     if (subopcion2 != 0)
@@ -151,10 +185,38 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
             } while (subopcion2 != 0);
             break;
 
-        case 6:
-            system("cls");
-            listadoMultas(archivoMultas);
-            system("pause");
+        case 6: // MULTAS
+            do
+            {
+                system("cls");
+                cout << "MENU MULTAS" << endl;
+                cout << "1. Listado de multas" << endl;
+                cout << "2. Imprimir multas a archivo" << endl;
+                cout << "0. Volver al menu principal" << endl;
+                cout << "Seleccione una opcion: ";
+                cin >> subopcion;
+
+                switch(subopcion)
+                {
+                case 1:
+                    generarMultas(archivoprestamos, archivoMultas);
+                    system("pause");
+                    break;
+                case 2:
+                    ReporteEstudiantesMultadosTXT(archivoMultas);
+                    cout << "Archivo multas.txt generado correctamente." << endl;
+                    system("pause");
+                    break;
+                default:
+                    if(subopcion != 0)
+                    {
+                        cout << "Opcion no valida." << endl;
+                        system("pause");
+                    }
+                    break;
+                }
+
+            } while(subopcion != 0);
             break;
 
         default:
@@ -165,6 +227,7 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
             }
             break;
         }
+
     } while (opcion != 0);
 
     system("cls");
