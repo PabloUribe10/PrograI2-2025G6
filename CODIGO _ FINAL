@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string archivoprestamos, string archivoLibros, string archivoMultas);
+void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string archivoprestamos, string archivoLibros, vector<Carrera> &carreras,string archivoMultas);
 void NuevoPrestamo(string archivoprestamos, string archivoEstudiantes);
 void agregarlibro(string archivoLibros);
 void listadoLibros(string archivoLibros);
