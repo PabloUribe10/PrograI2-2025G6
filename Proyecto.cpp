@@ -2,19 +2,19 @@
 #include <fstream>
 #include <string>
 #include "libestructurasPablo.h"
+//#include "libAlesa.h"
 
 using namespace std;
 
-void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string archivoprestamos, string archivoLibros);
-//void NuevoEstudiante(string archivoEstudiantes);
-//void CrearCarrera(string archivoCarreras);
-//void ListadoCarreras(string archivoCarreras);
+void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string archivoprestamos, string archivoLibros, string archivoMultas);
 void NuevoPrestamo(string archivoprestamos, string archivoEstudiantes);
 void agregarlibro(string archivoLibros);
 void listadoLibros(string archivoLibros);
 void listadoLibrosImpresora(string archivoLibros);
 void ReportePrestamosActivos(string archivoprestamos);
 void ReporteLibroMasPrestado(string archivoprestamos, string archivoLibros);
+void listadoMultas(string archivoMultas);
+void registrarMulta(string archivoMultas, int ID_estudiante, int dias);
 
 int main()
 {
@@ -22,16 +22,18 @@ int main()
     string archivoEstudiantes = "estudiantes.bin";
     string archivoprestamos = "prestamos.bin";
     string archivoLibros = "libros.bin";
+    string archivoMultas = "multas.bin";
 
-    MenuOpciones(archivoCarreras, archivoEstudiantes, archivoprestamos, archivoLibros);
+    MenuOpciones(archivoCarreras, archivoEstudiantes, archivoprestamos, archivoLibros, archivoMultas);
     return 0;
 }
 
-void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string archivoprestamos, string archivoLibros)
+void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string archivoprestamos, string archivoLibros, string archivoMultas)
 {
     int opcion = 0;
     int subopcion = 0;
     int subopcion2 = 0;
+    vector<Carrera> carreras;
 
     do
     {
@@ -43,10 +45,10 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
         cout << "3. Datos Carreras" << endl;
         cout << "4. Nuevo Estudiante" << endl;
         cout << "5. Reportes" << endl;
+        cout << "6. Multas" << endl;
         cout << "0. Salir" << endl;
         cout << "Seleccione una opcion: ";
         cin >> opcion;
-
         switch (opcion)
         {
         case 1:
@@ -60,7 +62,7 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
                 system("cls");
                 cout << "Organizar Inventario" << endl;
                 cout << "================================" << endl;
-                cout << "1. Agregrar Libro" << endl;
+                cout << "1. Agregar Libro" << endl;
                 cout << "2. Listado Libros" << endl;
                 cout << "3. Listado Libros (Impresora)" << endl;
                 cout << "0. Salir" << endl;
@@ -93,40 +95,17 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
             break;
 
         case 3:
-            do
-            {
-                system("cls");
-                cout << "MENU CARRERAS" << endl;
-                cout << "=============" << endl;
-                cout << "1. Crear Carrera" << endl;
-                cout << "2. Listado Carreras" << endl;
-                cout << "0. Salir" << endl;
-                cout << "Seleccione una opcion: ";
-                cin >> subopcion;
-
-                switch (subopcion)
-                {
-                case 1:
-                    //CrearCarrera(archivoCarreras);
-                    system("pause");
-                    break;
-                case 2:
-                    //ListadoCarreras(archivoCarreras);
-                    system("pause");
-                    break;
-                default:
-                    if (subopcion != 0)
-                    {
-                        cout << "Opcion no valida." << endl;
-                        system("pause");
-                    }
-                    break;
-                }
-            } while (subopcion != 0);
+            system("cls");
+            cout << "LISTADO DE CARRERAS" << endl;
+            agregarCarreras(carreras);
+            listadoCarreras(carreras);
+            system("pause");
             break;
 
         case 4:
-            //NuevoEstudiante(archivoEstudiantes);
+            system("cls");
+            agregarEstudiante(archivoEstudiantes);
+            cout << "Estudiante registrado correctamente." << endl;
             system("pause");
             break;
 
@@ -138,9 +117,8 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
                 cout << "=============" << endl;
                 cout << "1. Libro mas prestado" << endl;
                 cout << "2. Estudiantes con prestamos activos" << endl;
-                cout << "3. Libro menos prestado" << endl;
-                cout << "4. Estudiantes morosos" << endl;
-                cout << "5. Prestamos por carrera" << endl;
+                cout << "3. Estudiantes morosos" << endl;
+                cout << "4. Prestamos por carrera" << endl;
                 cout << "0. Salir" << endl;
                 cout << "Seleccione una opcion: ";
                 cin >> subopcion2;
@@ -156,12 +134,11 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
                     system("pause");
                     break;
                 case 3:
-                    //listadoEstudiantes(archivoEstudiantes, archivoCarreras);
+                    imprimirEstudiantesTXT(archivoEstudiantes, "estudiantes_morosos.txt");
+                    cout << "Archivo generado: estudiantes_morosos.txt" << endl;
                     system("pause");
-                    break;
                 case 4:
-                    //listadoEstudiantes(archivoEstudiantes, archivoCarreras);
-                    system("pause");
+                    
                     break;
                 default:
                     if (subopcion2 != 0)
@@ -172,6 +149,12 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
                     break;
                 }
             } while (subopcion2 != 0);
+            break;
+
+        case 6:
+            system("cls");
+            listadoMultas(archivoMultas);
+            system("pause");
             break;
 
         default:
@@ -186,53 +169,3 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
 
     system("cls");
 }
-
-/*
-void CrearCarrera(string archivoCarreras)
-{
-    Carrera _carrera;
-    ofstream archivo;
-    archivo.open(archivoCarreras, ios::binary | ios::app);
-    if (archivo.good())
-    {
-        cout << "Ingrese Codigo: ";
-        cin >> _carrera.codigo;
-        cin.ignore();
-        cout << "Ingrese Resumido: ";
-        cin.getline(_carrera.resumido, 4);
-        cout << "Ingrese Nombre: ";
-        cin.getline(_carrera.nombre, 30);
-        archivo.write((char*)&_carrera, sizeof(Carrera));
-        cout << "Carrera creada exitosamente." << endl;
-    }
-    else
-    {
-        cout << "No se pudo abrir el archivo." << endl;
-    }
-    archivo.close();
-}
-
-void ListadoCarreras(string archivoCarreras)
-{
-    Carrera _carrera;
-    ifstream archivo;
-    archivo.open(archivoCarreras, ios::binary);
-    if (archivo.good())
-    {
-        cout << "CARRERAS" << endl;
-        cout << "========" << endl;
-        cout << "Codigo\tResumido\tNombre" << endl;
-        cout << "------------------------------------------------" << endl;
-        while (archivo.read((char*)&_carrera, sizeof(Carrera)))
-        {
-            cout << _carrera.codigo << "\t" << _carrera.resumido << "\t\t" << _carrera.nombre << endl;
-        }
-        cout << "------------------------------------------------" << endl;
-    }
-    else
-    {
-        cout << "No se pudo abrir el archivo." << endl;
-    }
-    archivo.close();
-}
-*/
