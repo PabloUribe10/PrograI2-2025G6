@@ -94,6 +94,26 @@ void mostrarFecha(fecha f)
 }
 
 // libro
+
+bool existeLibro(string archivoLibros, int isbn)
+{
+    ifstream arch(archivoLibros, ios::binary);
+    if (!arch.is_open()) return false;
+
+    libro l;
+    while (arch.read((char*)&l, sizeof(libro)))
+    {
+        if (l.ISBN == isbn)
+        {
+            arch.close();
+            return true;
+        }
+    }
+
+    arch.close();
+    return false;
+}
+
 void agregarlibro(string archivoLibros)
 {
     fstream archLibros(archivoLibros, ios::binary | ios::app);
@@ -244,7 +264,7 @@ void listadoLibrosImpresora(string archivoLibros)
 }
 
 // Prestamo
-void NuevoPrestamo(string archivoprestamos, string archivoEstudiantes)
+void NuevoPrestamo(string archivoprestamos, string archivoEstudiantes, string archivoLibros)
 {
     fstream archPrestamos(archivoprestamos, ios::binary | ios::app);
 
@@ -262,6 +282,13 @@ void NuevoPrestamo(string archivoprestamos, string archivoEstudiantes)
 
     cout << "ISBN del libro: ";
     cin >> p.ISBN_libro;
+
+    if (!existeLibro(archivoLibros, p.ISBN_libro))
+    {
+        cout << "El libro no existe.\n";
+        archPrestamos.close();
+        return;
+    }
 
     cout << "CI del usuario: ";
     cin >> p.CI_usuario;
@@ -765,7 +792,6 @@ void ReporteLibrosPorCarreraTXT(string archivoLibros, string archivoCarreras)
         return;
     }
 
-    // ---- Mostrar carreras ----
     Carrera c;
     cout << "CARRERAS DISPONIBLES\n";
     cout << "Codigo\tNombre\n";
@@ -802,7 +828,6 @@ void ReporteLibrosPorCarreraTXT(string archivoLibros, string archivoCarreras)
         return;
     }
 
-    // ---- Generar reporte ----
     libro l;
     int total = 0;
 
