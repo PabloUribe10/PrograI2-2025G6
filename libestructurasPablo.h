@@ -442,12 +442,16 @@ void ReportePrestamosActivos(string archivoprestamos)
 }
 
 
+
+
 //alesa
 
 struct Carrera
 {
     int ID_carrera;
     char nombre[50];
+    char resumido[4];
+    int codigo;
 };
 
 struct Estudiante
@@ -477,49 +481,84 @@ int generarCodigoAleatori(int digitos = 6)
 }
 
 
-void agregarCarreras(vector<Carrera> &carreras)
+void CrearCarrera(string archivoCarreras)
 {
-    const char *nombres[] = {"Medicina", "Ingenieria", "Derecho"};
-    for (int i = 0; i < 3; i++)
+    Carrera _carrera;
+    ofstream archivo(archivoCarreras, ios::binary | ios::app);
+
+    if (archivo.good())
     {
-        Carrera c;
-        c.ID_carrera = i + 1;
-        strcpy(c.nombre, nombres[i]);
-        carreras.push_back(c);
+        cout << "Ingrese Codigo: ";
+        cin >> _carrera.codigo;
+
+        cin.ignore(); // limpiar ENTER del cin >>
+        cout << "Ingrese Resumido: ";
+        cin.getline(_carrera.resumido, 4);
+
+        cout << "Ingrese Nombre: ";
+        cin.getline(_carrera.nombre, 30);
+
+        archivo.write((char*)&_carrera, sizeof(Carrera));
+        cout << "Carrera creada exitosamente." << endl;
     }
+    else
+    {
+        cout << "No se pudo abrir el archivo." << endl;
+    }
+
+    archivo.close();
 }
 
-void listadoCarreras(vector<Carrera> &carreras)
+void ListadoCarreras(string archivoCarreras)
 {
-    cout << "LISTADO DE CARRERAS\n";
-    for (size_t i = 0; i < carreras.size(); i++)
+    Carrera _carrera;
+    ifstream archivo;
+    archivo.open(archivoCarreras, ios::binary);
+    if (archivo.good())
     {
-        cout << carreras[i].ID_carrera << " - "
-             << carreras[i].nombre << endl;
+        cout << "CARRERAS" << endl;
+        cout << "========" << endl;
+        cout << "Codigo\tResumido\tNombre" << endl;
+        cout << "------------------------------------------------" << endl;
+        while (archivo.read((char*)&_carrera, sizeof(Carrera)))
+        {
+            cout << _carrera.codigo << "\t" << _carrera.resumido << "\t\t" << _carrera.nombre << endl;
+        }
+        cout << "------------------------------------------------" << endl;
     }
+    else
+    {
+        cout << "No se pudo abrir el archivo." << endl;
+    }
+    archivo.close();
 }
 
 
-void agregarEstudiante(string archivoEstudiantes)
+void CrearEstudiante(string archivoEstudiantes, string archivoCarreras)
 {
-    fstream arch(archivoEstudiantes, ios::binary | ios::app);
-    if (!arch.is_open())
-        return;
-
-    Estudiante e;
-    e.ID_estudiante = generarCodigoAleatori();
-    e.habilitado = true;
-
-    cin.ignore();
-    cout << "Nombre: ";
-    cin.getline(e.nombre, 50);
-    cout << "Apellido: ";
-    cin.getline(e.apellido, 50);
-    cout << "Carrera: ";
-    cin.getline(e.carrera, 50);
-
-    arch.write((char *)&e, sizeof(Estudiante));
-    arch.close();
+    Estudiante _estudiante;
+    ofstream archivo;
+    archivo.open(archivoEstudiantes, ios::binary | ios::app);
+    if (archivo.good())
+    {
+        cin.ignore();
+        cout << "Ingrese CI: ";
+        cin >> _estudiante.ID_estudiante;
+        cout << "Ingrese Nombres: ";
+        cin.getline(_estudiante.nombre, 30);
+        cout << "Ingrese Apellidos: ";
+        cin.getline(_estudiante.apellido, 30);
+        ListadoCarreras(archivoCarreras);
+        cout << "Ingrese Codigo de Carrera: ";
+        cin >> _estudiante.carrera;
+        archivo.write((char*)&_estudiante, sizeof(Estudiante));
+        cout << "Estudiante creado exitosamente." << endl;
+    }
+    else
+    {
+        cout << "No se pudo abrir el archivo." << endl;
+    }
+    archivo.close();
 }
 
 void imprimirEstudiantesTXT(string archivoEstudiantes, string archivoSalida)
@@ -533,7 +572,7 @@ void imprimirEstudiantesTXT(string archivoEstudiantes, string archivoSalida)
     Estudiante e;
     while (arch.read((char*)&e, sizeof(Estudiante)))
     {
-        archTXT << e.nombre << " " << e.apellido
+        archTXT << e.ID_estudiante << " - " << e.nombre << " " << e.apellido
                 << " - " << e.carrera << "\n";
     }
 
