@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include "libestructurasPablo.h"
 #include "libAlesa.h"
 
@@ -15,6 +16,7 @@ void ReportePrestamosActivos(string archivoprestamos);
 void ReporteLibroMasPrestado(string archivoprestamos, string archivoLibros);
 void listadoMultas(string archivoMultas);
 void registrarMulta(string archivoMultas, int ID_estudiante, int dias);
+void imprimirMultasTXT(string archivoMultas, string archivoSalida);
 
 int main()
 {
@@ -24,11 +26,14 @@ int main()
     string archivoLibros = "libros.bin";
     string archivoMultas = "multas.bin";
 
-    MenuOpciones(archivoCarreras, archivoEstudiantes, archivoprestamos, archivoLibros, archivoMultas);
+    vector<Carrera> carreras;
+    agregarCarreras(carreras); // Inicializar las carreras por defecto
+
+    MenuOpciones(archivoCarreras, archivoEstudiantes, archivoprestamos, archivoLibros, carreras, archivoMultas);
     return 0;
 }
 
-void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string archivoprestamos, string archivoLibros, string archivoMultas)
+void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string archivoprestamos, string archivoLibros, vector<Carrera> &carreras,string archivoMultas)
 {
     int opcion = 0;
     int subopcion = 0;
@@ -94,17 +99,51 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
             } while (subopcion != 0);
             break;
 
-        case 3:
-            system("cls");
-            cout << "LISTADO DE CARRERAS" << endl;
-            listadoCarreras(carreras);  
-            system("pause");
+        case 3: // DATOS DE CARRERAS
+            do
+            {
+                system("cls");
+                cout << "LISTADO DE CARRERAS\n";
+                // Imprimir todas las carreras con ID actualizado
+                for(size_t i = 0; i < carreras.size(); i++)
+                {
+                    cout << (i + 1) << " - " << carreras[i].nombre << endl;
+                }
+
+                cout << "====================" << endl;
+                cout << "1. Agregar nueva carrera" << endl;
+                cout << "0. Volver al menu principal" << endl;
+                cout << "Seleccione una opcion: ";
+                cin >> subopcion;
+
+                if(subopcion == 1)
+                {
+                    cin.ignore();
+                    Carrera nueva;
+                    nueva.ID_carrera = carreras.size() + 1; 
+                    cout << "Nombre de la nueva carrera: ";
+                    cin.getline(nueva.nombre, 50);
+                    carreras.push_back(nueva);
+                    cout << "Carrera agregada correctamente." << endl;
+                    system("pause");
+                }
+            } while(subopcion != 0);
             break;
 
-        case 4:
+        case 4: 
             system("cls");
-            agregarEstudiante(archivoEstudiantes);
-            cout << "Estudiante registrado correctamente." << endl;
+            agregarEstudiante(archivoEstudiantes); 
+            {
+    
+                ifstream arch(archivoEstudiantes, ios::binary);
+                Estudiante e;
+                Estudiante ultimo;
+                while(arch.read((char*)&e, sizeof(Estudiante)))
+                    ultimo = e;
+                arch.close();
+                cout << "Estudiante registrado correctamente." << endl;
+                cout << "ID del estudiante: " << ultimo.ID_estudiante << endl;
+            }
             system("pause");
             break;
 
@@ -157,10 +196,38 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
             } while (subopcion2 != 0);
             break;
 
-        case 6:
-            system("cls");
-            listadoMultas(archivoMultas);
-            system("pause");
+        case 6: // MULTAS
+            do
+            {
+                system("cls");
+                cout << "MENU MULTAS" << endl;
+                cout << "1. Listado de multas" << endl;
+                cout << "2. Imprimir multas a archivo" << endl;
+                cout << "0. Volver al menu principal" << endl;
+                cout << "Seleccione una opcion: ";
+                cin >> subopcion;
+
+                switch(subopcion)
+                {
+                case 1:
+                    listadoMultas(archivoMultas);
+                    system("pause");
+                    break;
+                case 2:
+                    imprimirMultasTXT(archivoMultas, "multas.txt");
+                    cout << "Archivo multas.txt generado correctamente." << endl;
+                    system("pause");
+                    break;
+                default:
+                    if(subopcion != 0)
+                    {
+                        cout << "Opcion no valida." << endl;
+                        system("pause");
+                    }
+                    break;
+                }
+
+            } while(subopcion != 0);
             break;
 
         default:
@@ -171,6 +238,7 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
             }
             break;
         }
+
     } while (opcion != 0);
 
     system("cls");
