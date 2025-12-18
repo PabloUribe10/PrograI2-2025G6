@@ -97,9 +97,7 @@ void MenuOpciones(string archivoCarreras, string archivoEstudiantes, string arch
         case 3:
             system("cls");
             cout << "LISTADO DE CARRERAS" << endl;
-            vector<Carrera> carreras;
-            agregarCarreras(carreras);
-            listadoCarreras(carreras);
+            listadoCarreras(carreras);  
             system("pause");
             break;
 
