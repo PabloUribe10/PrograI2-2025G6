@@ -1,3 +1,7 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
 struct Categoria
 {
     int id_categoria;   // ID único de la categoría
